@@ -5,29 +5,25 @@ resource "proxmox_virtual_environment_vm" "dc02" {
 
   cpu {
     cores = 2
+    type  = "x86-64-v2-AES"
   }
-
 
   memory {
     dedicated = 4096
   }
 
-  disk {
-    datastore_id = "local-zfs"
-    interface    = "scsi0"
-    size         = 80
-  }
-
-  network_device {
-    bridge = "vmbr0"
-    model  = "virtio"
-  }
-
-  bios = "ovmf"
+  bios    = "ovmf"
+  machine = "pc-q35-11.0"
 
   efi_disk {
+    datastore_id      = "local-zfs"
+    type              = "4m"
+    pre_enrolled_keys = true
+  }
+
+  tpm_state {
     datastore_id = "local-zfs"
-    file_format  = "raw"
+    version      = "v2.0"
   }
 
   cdrom {
@@ -35,14 +31,16 @@ resource "proxmox_virtual_environment_vm" "dc02" {
     interface = "ide2"
   }
 
-  boot_order = ["ide2", "scsi0"]
-
-  agent {
-    enabled = true
+  network_device {
+    bridge = "vmbr0"
+    model  = "virtio"
   }
 
+  disk {
+    datastore_id = "local-zfs"
+    interface    = "ide0"
+    size         = 80
+  }
+
+  boot_order = ["ide0", "ide2", "net0"]
 }
-
-
-
-
