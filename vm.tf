@@ -37,6 +37,10 @@ resource "proxmox_virtual_environment_vm" "dc02" {
 
   boot_order = ["ide2", "scsi0"]
 
+  agent {
+    enabled = true
+  }
+
 }
 
 
